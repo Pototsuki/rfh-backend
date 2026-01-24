@@ -1,0 +1,38 @@
+{
+  "name": "rfh-backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "migrate": "node scripts/migrate.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pototsuki/rfh-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Pototsuki/rfh-backend/issues"
+  },
+  "homepage": "https://github.com/Pototsuki/rfh-backend#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mysql": "^2.18.1",
+    "mysql2": "^3.16.1",
+    "sequelize": "^6.37.7",
+    "umzug": "^3.8.2",
+    "uuid": "^13.0.0",
+    "uuidv4": "^6.2.13"
+  }
+}
