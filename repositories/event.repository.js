@@ -1,32 +1,44 @@
-const { Op, fn, col, where } = require('sequelize')
-const Student = require('../models/student.model')
+const { Op, where, fn, col } = require('sequelize');
+const Events = require('../models/event.model');
 
-class StudentRepository {
+class EventsRepository {
 
-  async findByEmail(email) {
-    return Student.findOne({ where: { email, is_deleted: 0 } })
+  async findById(id) {
+    return Events.findOne({ where: { id } });
   }
 
-  async findByUUID(uuid) {
-    return Student.findOne({ where: { uuid, is_deleted: 0 } })
+  async findAll() {
+    return Events.findAll();
+  }
+
+  async findByType(type_id) {
+    return Events.findAll({ where: { type_id } });
   }
 
   async create(payload) {
-    return Student.create(payload)
+    return Events.create(payload);
   }
 
   async update(id, payload) {
-    return Student.update(payload,{ where: { id }})
+    return Events.update(payload, { where: { id } });
   }
 
-  async findById(id) {
-    return Student.findOne({ where: { id } })
+  async delete(id) {
+    return Events.destroy({ where: { id } });
+  }
+
+  async countAll() {
+    return Events.count();
+  }
+
+  async findByNameAndType(name, type_id) {
+    return Events.findOne({ where: { name, type_id } });
   }
 
   async findAllPaginated({ page = 1, limit = 10, search = '' }) {
     const offset = (page - 1) * limit
 
-    const whereClause = { is_deleted: 0 }
+    const whereClause = {}
   
     if (search) {
       whereClause[Op.and] = [
@@ -39,17 +51,14 @@ class StudentRepository {
       ]
     }
 
-    const { rows, count } = await Student.findAndCountAll({
+    const { rows, count } = await Events.findAndCountAll({
       where: whereClause,
       limit,
       offset,
       order: [['created_at', 'DESC']]
     })
 
-    return {
-      rows,
-      count
-    }
+    return { rows, count }
   }
 
   async findAllByIdPaginated({ page = 1, limit = 10, search = '', id = [] }) {
@@ -72,7 +81,7 @@ class StudentRepository {
       whereClause.id = {[Op.in]: id};
     }
 
-    const { rows, count } = await Student.findAndCountAll({
+    const { rows, count } = await Events.findAndCountAll({
       where: whereClause,
       limit,
       offset,
@@ -81,7 +90,6 @@ class StudentRepository {
 
     return { rows, count }
   }
-
 }
 
-module.exports = new StudentRepository()
+module.exports = new EventsRepository();
