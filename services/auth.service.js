@@ -20,7 +20,7 @@ class AuthService {
       return data      
     } catch (error) {
       if (error instanceof AppError) throw error
-      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Internal Server Error')
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Login Internal Server Error')
     }
   }
 
@@ -31,15 +31,15 @@ class AuthService {
       if(existingAdmin) throw new AppError(StatusCodes.CONFLICT, 'Username sudah terdaftar')
       const adminCount = await AdminRepository.countAll()
       const AdminCountSetting = await SettingRepository.getByKey('admin_count')
-      const maxAdmin = AdminCountSetting.value || 3
+      const maxAdmin = AdminCountSetting?.value || 3
       if(adminCount > maxAdmin) throw new AppError(StatusCodes.FORBIDDEN, 'Max Admin Count Reached')
       const hashedPassword = await bcrypt.hash(password, 10)
       const payloadAdmin = {
         username: username,
         password: hashedPassword,
         role: AdminRoleEnum.ADMIN,
-        created_at: Date.now(),
-        updated_at: Date.now()
+        created_at: Date.now()/ 1000,
+        updated_at: Date.now()/ 1000
       }
       const admin = await AdminRepository.create(payloadAdmin)
       const token = jwt.sign({ id: admin.id, role: admin.role }, process.env.JWT_SECRET,{ expiresIn: '1d' })
@@ -47,7 +47,7 @@ class AuthService {
       return data      
     } catch (error) {
       if (error instanceof AppError) throw error
-      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Internal Server Error')
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Register Internal Server Error')
     }
   }
 
@@ -64,7 +64,7 @@ class AuthService {
       return data      
     } catch (error) {
       if (error instanceof AppError) throw error
-      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Internal Server Error')
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,' Reset Internal Server Error')
     }
   }
 }

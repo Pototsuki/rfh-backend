@@ -35,7 +35,7 @@ class StudentService {
       const existingStudent = await StudentRepository.findByEmail(email)
       if (existingStudent) throw new AppError(StatusCodes.CONFLICT,'Email sudah terdaftar')
       const uuid = uuidv4()
-      const now = Date.now()
+      const now = Date.now()/ 1000
       const studentPayload = { uuid, name, email, phone, address, created_at: now, updated_at: now }
       const createStudent = await StudentRepository.create(studentPayload)
       const result = {
@@ -48,7 +48,7 @@ class StudentService {
       return result
     } catch (error) {
       if (error instanceof AppError) throw error
-      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Internal Server Error')
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Create Student Internal Server Error')
     }
   }
 
@@ -57,7 +57,7 @@ class StudentService {
       const { uuid } = payload
       const existingStudent = await StudentRepository.findByUUID(uuid)
       if (!existingStudent) throw new AppError(StatusCodes.CONFLICT,'Student tidak terdaftar')
-      const now = Date.now()
+      const now = Date.now()/ 1000
       const deleteStudentPayload = { is_deleted: 1, deleted_at: now }
       await StudentRepository.update(existingStudent.id, deleteStudentPayload)
       const result = {
@@ -69,7 +69,7 @@ class StudentService {
       return result
     } catch (error) {
       if (error instanceof AppError) throw error
-      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Internal Server Error')
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Delete Student Internal Server Error')
     }
   }
 
@@ -89,7 +89,7 @@ class StudentService {
       return result
     } catch (error) {
       if (error instanceof AppError) throw error
-      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Internal Server Error')
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Detail Student Internal Server Error')
     }
   }
 }
