@@ -12,7 +12,7 @@ const list = async (req, res) => {
     return successWithPagination(res, result.data, result.meta)
   } catch (err) {
     if (err instanceof AppError) return error(res, err.message, err.statusCode)
-    return err(res, 'Login Internal Server Error', 500)
+    return err(res, 'List Student Internal Server Error', 500)
   }
 }
 
@@ -55,4 +55,30 @@ const detail = async (req, res) => {
   }
 }
 
-module.exports = { list, create, deleteStudent, detail }
+const assign = async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return error(res, errors.array()[0].msg, 422)
+    const studentService = new StudentService();
+    const result = await studentService.assign(req.body)
+    return success(res, result)
+  } catch (err) {
+    if (err instanceof AppError) return error(res, err.message, err.statusCode)
+    return err(res, 'Assign Student Internal Server Error', 500)
+  }
+}
+
+const listEventByStudent = async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return error(res, errors.array()[0].msg, 422)
+    const studentService = new StudentService();
+    const result = await studentService.listEventByStudent(req.body)
+    return successWithPagination(res, result.data, result.meta)
+  } catch (err) {
+    if (err instanceof AppError) return error(res, err.message, err.statusCode)
+    return err(res, 'List Student Event Internal Server Error', 500)
+  }
+}
+
+module.exports = { list, create, deleteStudent, detail, assign, listEventByStudent }
