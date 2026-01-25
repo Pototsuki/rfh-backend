@@ -1,29 +1,34 @@
 require("dotenv").config()
 
 const cors = require('cors')
-const express = require('express');
-const app = express();
+const express = require('express')
+const app = express()
 const router = require('./routers/index.router')
-const port = process.env.PORT || 3000;
 const sequelize = require('./config/database')
 const errorHandler = require('./middleware/error.middleware')
 
-app.use(cors())
+/**
+ * ⛔️ PENTING: JANGAN fallback ke 3000
+ */
+const PORT = process.env.PORT
+const HOST = '0.0.0.0'
 
-app.use(express.urlencoded({extended: true}))
+app.use(cors())
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-app.use(router)
 
 app.get('/', (req, res) => {
-  res.send('RFH Backend API!');
-});
+  res.send('RFH Backend API!')
+})
 
 app.get('/healthcheck', (req, res) => {
-  res.send(true);
-});
+  res.json({ status: 'ok' })
+})
 
+app.use(router)
+app.use(errorHandler)
 
-(async () => {
+;(async () => {
   try {
     await sequelize.authenticate()
     console.log('✅ Database connected')
@@ -32,10 +37,8 @@ app.get('/healthcheck', (req, res) => {
   }
 })()
 
+app.listen(PORT, HOST, () => {
+  console.log(`🚀 RFH Backend running on port ${PORT}`)
+})
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
-
-app.use(errorHandler)
 module.exports = app
