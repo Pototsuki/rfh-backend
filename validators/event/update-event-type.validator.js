@@ -1,14 +1,15 @@
 const { body } = require('express-validator')
+const { ErrorValidationEnum } = require('../../enums/errors.enum')
 
 module.exports = [
   body('id')
     .trim()
-    .notEmpty().withMessage('id is required')
-    .isNumeric().withMessage('id is number'),
+    .notEmpty().withMessage(ErrorValidationEnum.id_required)
+    .isNumeric().withMessage(ErrorValidationEnum.id_number),
   body('name')
     .optional()
-    .isString().withMessage('name is string'),
+    .isString().withMessage(ErrorValidationEnum.name_string),
   body('meta')
     .optional()
-    .isString().withMessage('meta is string')
+    .isString().withMessage(ErrorValidationEnum.meta_string)
 ]

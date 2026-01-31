@@ -1,26 +1,27 @@
 const { body } = require('express-validator')
+const { ErrorValidationEnum } = require('../../enums/errors.enum')
 
 module.exports = [
   body('name')
     .trim()
-    .notEmpty().withMessage('name is required')
-    .isString().withMessage('name is string'),
+    .notEmpty().withMessage(ErrorValidationEnum.name_required)
+    .isString().withMessage(ErrorValidationEnum.name_string),
   body('type_id')
     .trim()
-    .notEmpty().withMessage('type_id is required')
-    .isNumeric().withMessage('type_id is number'),
+    .notEmpty().withMessage(ErrorValidationEnum.type_id_required)
+    .isNumeric().withMessage(ErrorValidationEnum.type_id_number),
   body('start_date')
     .trim()
-    .notEmpty().withMessage('start_date is required')
-    .isNumeric().withMessage('start_date is number'),
+    .notEmpty().withMessage(ErrorValidationEnum.start_date_required)
+    .isNumeric().withMessage(ErrorValidationEnum.start_date_number),
   body('end_date')
     .trim()
-    .notEmpty().withMessage('end_date is required')
-    .isNumeric().withMessage('end_date is number'),
+    .notEmpty().withMessage(ErrorValidationEnum.end_date_required)
+    .isNumeric().withMessage(ErrorValidationEnum.end_date_number),
   body('meta')
     .optional()
-    .isString().withMessage('meta is string'),
+    .isString().withMessage(ErrorValidationEnum.meta_string),
   body('is_active')
     .optional()
-    .isNumeric().withMessage('is_active is number')
+    .isNumeric().withMessage(ErrorValidationEnum.is_active_number)
 ]
