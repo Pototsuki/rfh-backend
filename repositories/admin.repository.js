@@ -18,6 +18,10 @@ class AdminRepository {
     return Admin.update(payload,{ where: { id }})
   }
 
+  async findByIdAndRole(id, role) {
+    return Admin.findOne({ where: { id, role } })
+  }
+
 }
 
 module.exports = new AdminRepository()

@@ -30,6 +30,32 @@ class EventTypeRepository {
     return EventType.findOne({ where: { name } });
   }
 
+  async findAllPaginated({ page = 1, limit = 10, search = '' }) {
+    const offset = (page - 1) * limit
+
+    const whereClause = {}
+  
+    if (search) {
+      whereClause[Op.and] = [
+        where(
+          fn('LOWER', col('name')),
+          {
+            [Op.like]: `%${search.toLowerCase()}%`
+          }
+        )
+      ]
+    }
+
+    const { rows, count } = await EventType.findAndCountAll({
+      where: whereClause,
+      limit,
+      offset,
+      order: [['created_at', 'DESC']]
+    })
+
+    return { rows, count }
+  }
+
 }
 
 module.exports = new EventTypeRepository();

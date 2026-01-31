@@ -5,6 +5,7 @@ const EventsRepository = require('../repositories/event.repository')
 const EventTypeRepository = require('../repositories/event-type.repository')
 const StudentEventsRepository = require('../repositories/student-event.repository')
 const AppError = require('../helpers/app-error')
+const { ErrorServiceEnum } = require('../enums/errors.enum')
 
 class EventService {
   
@@ -27,7 +28,6 @@ class EventService {
       }
 
     } catch (error) {
-      console.log(error, 'ini error')
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Gagal mengambil data events')
     }
   }
@@ -36,10 +36,10 @@ class EventService {
     try {
       const { name, type_id, start_date, end_date, meta, is_active } = payload
       const existingEventType = await EventTypeRepository.findById(type_id)
-      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT,'Event Type tidak terdaftar')
+      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
       const existingEvent = await EventsRepository.findByNameAndType(name, type_id)
-      if (existingEvent) throw new AppError(StatusCodes.CONFLICT,'Event sudah terdaftar')
-      if (start_date >= end_date) throw new AppError(StatusCodes.BAD_REQUEST,'start_date harus lebih kecil dari end_date');
+      if (existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_registered)
+      if (start_date >= end_date) throw new AppError(StatusCodes.BAD_REQUEST, ErrorServiceEnum.start_date_must_be_lower_than_end_date);
       const now = Date.now()/ 1000
       const eventPayload = { name, type_id, start_date, end_date, meta, is_active: is_active ?? 1, created_at: now, updated_at: now }
       const createEvent = await EventsRepository.create(eventPayload)
@@ -59,10 +59,10 @@ class EventService {
     try {
       const { id } = payload
       const existingEvent = await EventsRepository.findById(id)
-      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT,'Event tidak terdaftar')
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
       if(payload.type_id) {
         const existingEventType = await EventTypeRepository.findById(payload.type_id)
-        if (!existingEventType) throw new AppError(StatusCodes.CONFLICT,'Event Type tidak terdaftar')
+        if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
       }
 
       const updatableFields = [
@@ -90,7 +90,7 @@ class EventService {
 
       const finalStartDate = updatePayload.start_date ?? existingEvent.start_date
       const finalEndDate = updatePayload.end_date ?? existingEvent.end_date
-      if (finalStartDate >= finalEndDate) throw new AppError(StatusCodes.BAD_REQUEST,'start_date harus lebih kecil dari end_date');
+      if (finalStartDate >= finalEndDate) throw new AppError(StatusCodes.BAD_REQUEST, ErrorServiceEnum.start_date_must_be_lower_than_end_date);
       const now = Math.floor(Date.now() / 1000);
       if (finalEndDate < now) updatePayload.is_active = 0
       updatePayload.updated_at = now;
@@ -114,7 +114,7 @@ class EventService {
     try {
       const { name, meta } = payload
       const existingEventType = await EventTypeRepository.findByName(name)
-      if (existingEventType) throw new AppError(StatusCodes.CONFLICT,'Event Type sudah terdaftar')
+      if (existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_registered)
       const now = Date.now()/ 1000
       const eventTypePayload = { name, meta, created_at: now, updated_at: now }
       const createEventType = await EventTypeRepository.create(eventTypePayload)
@@ -133,7 +133,7 @@ class EventService {
     try {
       const { id } = payload
       const existingEventType = await EventTypeRepository.findById(id)
-      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT,'Event Type tidak terdaftar')
+      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
 
       const updatableFields = [ 'name', 'meta' ];
       const updatePayload = {}
@@ -169,7 +169,7 @@ class EventService {
       const search = payload?.search || ''
 
       const existingEvent = await EventsRepository.findById(id)
-      if(!existingEvent) throw new AppError(StatusCodes.CONFLICT,'Event tidak terdaftar')
+      if(!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
       const { rows, count } = await StudentEventsRepository.findStudentsByEventPaginated({
         event_id: existingEvent.id, page, limit, search
       });
@@ -201,13 +201,13 @@ class EventService {
     try {
       const { uuid } = payload
       const existingStudentEvent = await StudentEventsRepository.findByUuid(uuid)
-      if (!existingStudentEvent) throw new AppError(StatusCodes.CONFLICT,'Data tidak terdaftar')
+      if (!existingStudentEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_event_not_registered)
       const existingStudent = await StudentRepository.findById(existingStudentEvent.student_id)
-      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT,'Student tidak terdaftar')
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
       const existingEvent = await EventsRepository.findById(existingStudentEvent.event_id)
-      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT,'Event tidak terdaftar')
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
       const existingEventType = await EventTypeRepository.findById(existingEvent.type_id)
-      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT,'Event type tidak terdaftar')
+      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
       const result = {
         student_name: existingStudent.name,
         event_name: existingEvent.name,
@@ -226,11 +226,11 @@ class EventService {
     try {
       const { uuid } = payload
       const existingStudentEvent = await StudentEventsRepository.findByUuid(uuid)
-      if (!existingStudentEvent) throw new AppError(StatusCodes.CONFLICT,'Data tidak terdaftar')
+      if (!existingStudentEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_event_not_registered)
       const existingStudent = await StudentRepository.findById(existingStudentEvent.student_id)
-      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT,'Student tidak terdaftar')
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
       const existingEvent = await EventsRepository.findById(existingStudentEvent.event_id)
-      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT,'Event tidak terdaftar')
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
       await StudentEventsRepository.deleteByUuid(uuid)
       const result = {
         student_name: existingStudent.name,
@@ -238,9 +238,30 @@ class EventService {
       }
       return result
     } catch (error) {
-      console.log(error, 'ini error')
       if (error instanceof AppError) throw error
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Delete Student Event Internal Server Error')
+    }
+  }
+
+  async listEventType(payload) {
+    try {
+      const page = parseInt(payload?.page) || 1
+      const limit = parseInt(payload?.limit) || 10
+      const search = payload?.search || ''
+      const { rows, count } = await EventTypeRepository.findAllPaginated({page,limit,search})
+
+      return {
+        data: rows,
+        meta: {
+          total: count,
+          page,
+          limit,
+          total_page: Math.ceil(count / limit)
+        }
+      }
+
+    } catch (error) {
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Gagal mengambil data events type')
     }
   }
 }

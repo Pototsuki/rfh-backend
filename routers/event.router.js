@@ -10,6 +10,7 @@ const updateEventTypeValidator = require('../validators/event/update-event-type.
 const listStudentByEventValidator = require('../validators/event/list-student-by-event.validator')
 const detailStudentEventValidator = require('../validators/event/detail-student-event.validator')
 const deleteStudentEventValidator = require('../validators/event/delete-student-event.validator')
+const listEventTypeValidator = require('../validators/event/list-event-type.validator')
 
 
 const router = Router()
@@ -22,5 +23,6 @@ router.post('/update-event-type', authenticate, adminAuthenticate, updateEventTy
 router.post('/list/student', authenticate, adminAuthenticate,listStudentByEventValidator, listStudentByEvent)
 router.get('/detail/:uuid', detailStudentEventValidator, detailStudentEvent)
 router.post('/delete', authenticate, adminAuthenticate, deleteStudentEventValidator, deleteStudentEvent)
+router.post('/list-event-type', authenticate, adminAuthenticate, listEventTypeValidator, list)
 
 module.exports = router
