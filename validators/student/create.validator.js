@@ -1,19 +1,20 @@
 const { body } = require('express-validator')
+const { ErrorValidationEnum } = require('../../enums/errors.enum')
 
 module.exports = [
   body('name')
     .trim()
-    .notEmpty().withMessage('name is required')
-    .isString().withMessage('name is string'),
+    .notEmpty().withMessage(ErrorValidationEnum.name_required)
+    .isString().withMessage(ErrorValidationEnum.name_string),
   body('email')
     .trim()
-    .notEmpty().withMessage('email is required')
-    .isEmail().withMessage('email format invalid')
+    .notEmpty().withMessage(ErrorValidationEnum.email_required)
+    .isEmail().withMessage(ErrorValidationEnum.invalid_email_format)
     .normalizeEmail(),
   body('phone')
-    .matches(/^(08|628|\+628)[0-9]{7,11}$/)
-    .withMessage('phone must be a valid Indonesian number'),
+    .notEmpty().withMessage(ErrorValidationEnum.phone_required)
+    .matches(/^(08|628|\+628)[0-9]{7,11}$/).withMessage(ErrorValidationEnum.invalid_phone_format),
   body('address')
-    .notEmpty().withMessage('address is required')
-    .isString().withMessage('address is string')
+    .notEmpty().withMessage(ErrorValidationEnum.address_required)
+    .isString().withMessage(ErrorValidationEnum.address_string)
 ]

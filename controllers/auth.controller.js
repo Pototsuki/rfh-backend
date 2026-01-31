@@ -42,4 +42,17 @@ const resetPassword = async (req, res) => {
   }
 }
 
-module.exports = { login, register, resetPassword }
+const getUser = async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return error(res, errors.array()[0].msg, 422)
+    const authService = new AuthService();
+    const result = await authService.getUser(req.user)
+    return success(res, result)
+  } catch (err) {
+    if (err instanceof AppError) return error(res, err.message, err.statusCode)
+    return err(res, 'Get User Internal Server Error', 500)
+  }
+}
+
+module.exports = { login, register, resetPassword, getUser }

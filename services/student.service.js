@@ -5,6 +5,7 @@ const AppError = require('../helpers/app-error')
 const { v4: uuidv4 } = require('uuid')
 const EventRepository = require('../repositories/event.repository')
 const StudentEventRepository = require('../repositories/student-event.repository')
+const { ErrorServiceEnum } = require('../enums/errors.enum')
 
 class StudentService {
   
@@ -35,7 +36,7 @@ class StudentService {
     try {
       const { name, email, phone, address } = payload
       const existingStudent = await StudentRepository.findByEmail(email)
-      if (existingStudent) throw new AppError(StatusCodes.CONFLICT,'Email sudah terdaftar')
+      if (existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.email_registered)
       const uuid = uuidv4()
       const now = Date.now()/ 1000
       const studentPayload = { uuid, name, email, phone, address, created_at: now, updated_at: now }
@@ -58,7 +59,7 @@ class StudentService {
     try {
       const { uuid } = payload
       const existingStudent = await StudentRepository.findByUUID(uuid)
-      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT,'Student tidak terdaftar')
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
       const now = Date.now()/ 1000
       const deleteStudentPayload = { is_deleted: 1, deleted_at: now }
       await StudentRepository.update(existingStudent.id, deleteStudentPayload)
@@ -79,7 +80,7 @@ class StudentService {
     try {
       const { uuid } = payload
       const existingStudent = await StudentRepository.findByUUID(uuid)
-      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT,'Student tidak terdaftar')
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
       const result = {
         uuid: existingStudent.uuid,
         name: existingStudent.name,
@@ -99,11 +100,11 @@ class StudentService {
     try {
       const { uuid, event_id } = payload
       const existingStudent = await StudentRepository.findByUUID(uuid)
-      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT,'Student tidak terdaftar')
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
       const existingEvent = await EventRepository.findById(event_id)
-      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT,'Event tidak terdaftar')
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
       const existingStudentEvent = await StudentEventRepository.findByStudentAndEvent(existingStudent.id, existingEvent.id)
-      if(existingStudentEvent) throw new AppError(StatusCodes.CONFLICT,'Student sudah terdaftar di event')
+      if(existingStudentEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_event_registered)
       const now = Date.now()/ 1000
       const uuidStudentEvent = uuidv4()
       const studentEventPayload = { uuid: uuidStudentEvent, student_id: existingStudent.id, event_id: existingEvent.id, is_finished: 0, created_at: now, updated_at: now }
@@ -129,7 +130,7 @@ class StudentService {
       const search = payload?.search || '';
 
       const existingStudent = await StudentRepository.findByUUID(uuid);
-      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, 'Student tidak terdaftar');
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered);
 
       const { rows, count } = await StudentEventRepository.findEventsByStudentPaginated({
         student_id: existingStudent.id, page, limit, search
