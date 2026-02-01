@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { list, create, updateEvent, createEventType, updateEventType, listStudentByEvent, detailStudentEvent, deleteStudentEvent } = require('../controllers/event.controller')
+const { list, create, updateEvent, createEventType, updateEventType, listStudentByEvent, detailStudentEvent, deleteStudentEvent, listEventType } = require('../controllers/event.controller')
 const authenticate = require('../middleware/auth.middleware')
 const adminAuthenticate = require('../middleware/admin.middleware')
 const listValidator = require('../validators/event/list.validator')
@@ -23,6 +23,6 @@ router.post('/update-event-type', authenticate, adminAuthenticate, updateEventTy
 router.post('/list/student', authenticate, adminAuthenticate,listStudentByEventValidator, listStudentByEvent)
 router.get('/detail/:uuid', detailStudentEventValidator, detailStudentEvent)
 router.post('/delete', authenticate, adminAuthenticate, deleteStudentEventValidator, deleteStudentEvent)
-router.post('/list-event-type', authenticate, adminAuthenticate, listEventTypeValidator, list)
+router.post('/list-event-type', authenticate, adminAuthenticate, listEventTypeValidator, listEventType)
 
 module.exports = router
