@@ -16,6 +16,19 @@ const list = async (req, res) => {
   }
 }
 
+const detail = async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return error(res, errors.array()[0].msg, 422)
+    const eventService = new EventService();
+    const result = await eventService.detail(req.params)
+    return success(res, result)
+  } catch (err) {
+    if (err instanceof AppError) return error(res, err.message, err.statusCode)
+    return err(res, 'Get Detail Event Internal Server Error', 500)
+  }
+}
+
 const create = async (req, res) => {
   try {
     const errors = validationResult(req)
@@ -120,4 +133,4 @@ const listEventType = async (req, res) => {
   }
 }
 
-module.exports = { list, create, updateEvent, createEventType, updateEventType, listStudentByEvent, detailStudentEvent, deleteStudentEvent, listEventType }
+module.exports = { list, detail, create, updateEvent, createEventType, updateEventType, listStudentByEvent, detailStudentEvent, deleteStudentEvent, listEventType }

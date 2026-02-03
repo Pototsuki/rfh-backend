@@ -6,6 +6,7 @@ const EventTypeRepository = require('../repositories/event-type.repository')
 const StudentEventsRepository = require('../repositories/student-event.repository')
 const AppError = require('../helpers/app-error')
 const { ErrorServiceEnum } = require('../enums/errors.enum')
+const { parseMeta } = require('../utils/general.util')
 
 class EventService {
   
@@ -32,6 +33,24 @@ class EventService {
     }
   }
 
+  async detail(payload) {
+    try {
+      const { id } = payload
+      const existingEvent = await EventsRepository.findById(id)
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_registered)
+      const result = {
+        name: existingEvent.name,
+        start_date: existingEvent.start_date,
+        end_date: existingEvent.end_date,
+        meta: parseMeta(existingEvent.meta)
+      }
+      return result
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Create Event Internal Server Error')
+    }
+  }
+
   async create(payload) {
     try {
       const { name, type_id, start_date, end_date, meta, is_active } = payload
@@ -46,7 +65,8 @@ class EventService {
       const result = {
         name: createEvent.name,
         start_date: createEvent.start_date,
-        end_date: createEvent.end_date
+        end_date: createEvent.end_date,
+        meta: parseMeta(createEvent.meta)
       }
       return result
     } catch (error) {
