@@ -42,6 +42,7 @@ class EventService {
         name: existingEvent.name,
         start_date: existingEvent.start_date,
         end_date: existingEvent.end_date,
+        is_active: existingEvent.is_active,
         meta: parseMeta(existingEvent.meta)
       }
       return result
