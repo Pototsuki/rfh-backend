@@ -17,7 +17,6 @@ class EventService {
       const search = payload?.search || ''
       const { rows, count } = await EventsRepository.findAllPaginated({page,limit,search})
 
-
       return {
         data: rows,
         meta: {
@@ -234,7 +233,8 @@ class EventService {
         event_name: existingEvent.name,
         event_type: existingEventType.name,
         start_date: existingEvent.start_date,
-        end_date: existingEvent.end_date
+        end_date: existingEvent.end_date,
+        meta: parseMeta(existingStudentEvent.meta)
       }
       return result
     } catch (error) {

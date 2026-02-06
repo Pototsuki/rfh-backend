@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { list, create, deleteStudent, detail, assign, listEventByStudent } = require('../controllers/student.controller')
+const { list, create, deleteStudent, detail, assign, listEventByStudent, updateStudentEvent } = require('../controllers/student.controller')
 const authenticate = require('../middleware/auth.middleware')
 const adminAuthenticate = require('../middleware/admin.middleware')
 const listValidator = require('../validators/student/list.validator')
@@ -8,6 +8,7 @@ const deleteValidator = require('../validators/student/delete.validator')
 const detailValidator = require('../validators/student/detail.validator')
 const assignValidator = require('../validators/student/assign.validator')
 const listEventByStudentValidator = require('../validators/student/list-event-by-student.validator')
+const updateStudentEventValidator = require('../validators/student/update-student-event.validator')
 
 
 const router = Router()
@@ -18,5 +19,6 @@ router.post('/delete', authenticate, adminAuthenticate, deleteValidator, deleteS
 router.get('/detail/:uuid', authenticate, adminAuthenticate, detailValidator, detail)
 router.post('/assign', authenticate, adminAuthenticate, assignValidator, assign)
 router.post('/list/event', authenticate, adminAuthenticate,listEventByStudentValidator, listEventByStudent)
+router.post('/update-student-event', authenticate, adminAuthenticate, updateStudentEventValidator, updateStudentEvent)
 
 module.exports = router
