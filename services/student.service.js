@@ -190,6 +190,7 @@ class StudentService {
       const updatedStudentEvent = await StudentEventRepository.findByUuid(uuid);
       const result = {
         uuid: updatedStudentEvent.uuid,
+        is_finished: updatedStudentEvent.is_finished,
         meta: parseMeta(updatedStudentEvent.meta)
       }
       return result
