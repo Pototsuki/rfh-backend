@@ -3,6 +3,17 @@ require("dotenv").config()
 const cors = require('cors')
 const express = require('express')
 const app = express()
+
+// 🔐 Force HTTPS (required for cPanel / reverse proxy)
+app.enable('trust proxy')
+app.use((req, res, next) => {
+  const proto = req.headers['x-forwarded-proto']
+  if (proto && proto !== 'https') {
+    return res.redirect(`https://${req.headers.host}${req.originalUrl}`)
+  }
+  next()
+})
+
 const router = require('./routers/index.router')
 const sequelize = require('./config/database')
 const errorHandler = require('./middleware/error.middleware')
