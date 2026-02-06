@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid')
 const EventRepository = require('../repositories/event.repository')
 const StudentEventRepository = require('../repositories/student-event.repository')
 const { ErrorServiceEnum } = require('../enums/errors.enum')
+const { parseMeta } = require('../utils/general.util')
 
 class StudentService {
   
@@ -110,6 +111,7 @@ class StudentService {
       const studentEventPayload = { uuid: uuidStudentEvent, student_id: existingStudent.id, event_id: existingEvent.id, is_finished: 0, created_at: now, updated_at: now }
       await StudentEventRepository.create(studentEventPayload)
       const result = {
+        uuid: uuidStudentEvent,
         student_name: existingStudent.name,
         event_name: existingEvent.name,
         event_start_date: existingEvent.start_date,
@@ -158,6 +160,42 @@ class StudentService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Gagal mengambil data event student')
+    }
+  }
+
+  async updateStudentEvent(payload) {
+    try {
+      const { uuid } = payload
+      const existingStudentEvent = await StudentEventRepository.findByUuid(uuid)
+      if (!existingStudentEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_event_not_registered)
+      const existingStudent = await StudentRepository.findById(existingStudentEvent.student_id)
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
+      const existingEvent = await EventRepository.findById(existingStudentEvent.event_id)
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
+      
+      const updatableFields = [ 'is_finished', 'meta' ];
+      const updatePayload = {}
+      for (const field of updatableFields) {
+        if (payload[field] !== undefined) updatePayload[field] = payload[field]
+      }
+
+      if (Object.keys(updatePayload).length === 0) {
+        return { id: existingStudentEvent.uuid, meta: parseMeta(existingStudentEvent.meta) }
+      }
+
+      const now = Date.now()/ 1000
+      updatePayload.updated_at = now;
+
+      await StudentEventRepository.update(existingStudentEvent.id, updatePayload)
+      const updatedStudentEvent = await StudentEventRepository.findByUuid(uuid);
+      const result = {
+        uuid: updatedStudentEvent.uuid,
+        meta: parseMeta(updatedStudentEvent.meta)
+      }
+      return result
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Update Student Event Internal Server Error')
     }
   }
 }

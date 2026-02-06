@@ -81,4 +81,17 @@ const listEventByStudent = async (req, res) => {
   }
 }
 
-module.exports = { list, create, deleteStudent, detail, assign, listEventByStudent }
+const updateStudentEvent = async (req, res) => {
+  try {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) return error(res, errors.array()[0].msg, 422)
+    const studentService = new StudentService();
+    const result = await studentService.updateStudentEvent(req.body)
+    return success(res, result)
+  } catch (err) {
+    if (err instanceof AppError) return error(res, err.message, err.statusCode)
+    return err(res, 'Update Student Event Internal Server Error', 500)
+  }
+}
+
+module.exports = { list, create, deleteStudent, detail, assign, listEventByStudent, updateStudentEvent }
