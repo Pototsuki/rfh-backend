@@ -234,6 +234,7 @@ class EventService {
         event_type: existingEventType.name,
         start_date: existingEvent.start_date,
         end_date: existingEvent.end_date,
+        is_finished: existingStudentEvent.is_finished,
         meta: parseMeta(existingStudentEvent.meta)
       }
       return result
