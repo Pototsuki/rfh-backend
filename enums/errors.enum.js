@@ -29,7 +29,8 @@ const ErrorValidationEnum = Object.freeze({
   phone_required: 'phone_required',
   invalid_phone_format: 'invalid_phone_format',
   address_required: 'address_required',
-  address_string: 'address_string'
+  address_string: 'address_string',
+  is_finished_number: 'is_finished_number'
 })
 
 const ErrorServiceEnum = Object.freeze({

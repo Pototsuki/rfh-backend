@@ -8,6 +8,10 @@ class StudentEventsRepository {
     return StudentEvents.create(payload);
   }
 
+  async update(id, payload) {
+    return StudentEvents.update(payload, { where: { id } });
+  }
+
   async findByStudent(student_id) {
     return StudentEvents.findAll({ where: { student_id } });
   }

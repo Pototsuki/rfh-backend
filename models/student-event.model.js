@@ -30,6 +30,11 @@ const StudentEvents = sequelize.define('student_events', {
     defaultValue: 0 // 1 = finish, 0 = on progress
   },
 
+  meta: {
+    type: DataTypes.TEXT('long'),
+    allowNull: true
+  },
+
   created_at: {
     type: DataTypes.BIGINT,
     allowNull: false
