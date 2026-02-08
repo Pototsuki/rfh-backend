@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { list, detail, create, updateEvent, createEventType, updateEventType, listStudentByEvent, detailStudentEvent, deleteStudentEvent, listEventType } = require('../controllers/event.controller')
+const { list, detail, create, updateEvent, createEventType, updateEventType, listStudentByEvent, detailStudentEvent, deleteStudentEvent, listEventType, generateCertificate } = require('../controllers/event.controller')
 const authenticate = require('../middleware/auth.middleware')
 const adminAuthenticate = require('../middleware/admin.middleware')
 const listValidator = require('../validators/event/list.validator')
@@ -12,6 +12,7 @@ const listStudentByEventValidator = require('../validators/event/list-student-by
 const detailStudentEventValidator = require('../validators/event/detail-student-event.validator')
 const deleteStudentEventValidator = require('../validators/event/delete-student-event.validator')
 const listEventTypeValidator = require('../validators/event/list-event-type.validator')
+const generateCertificateValidator = require('../validators/event/generate-certificate.validator')
 
 
 const router = Router()
@@ -26,5 +27,6 @@ router.post('/list/student', authenticate, adminAuthenticate,listStudentByEventV
 router.get('/detail/:uuid', detailStudentEventValidator, detailStudentEvent)
 router.post('/delete', authenticate, adminAuthenticate, deleteStudentEventValidator, deleteStudentEvent)
 router.post('/list-event-type', authenticate, adminAuthenticate, listEventTypeValidator, listEventType)
+router.get('/certificate/generate/:uuid', generateCertificateValidator, generateCertificate)
 
 module.exports = router

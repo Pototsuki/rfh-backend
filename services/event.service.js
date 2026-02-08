@@ -286,6 +286,30 @@ class EventService {
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Gagal mengambil data events type')
     }
   }
+
+  async generateCertificate(payload) {
+    try {
+      const { uuid } = payload
+      const existingStudentEvent = await StudentEventsRepository.findByUuid(uuid)
+      if (!existingStudentEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_event_not_registered)
+      const existingStudent = await StudentRepository.findById(existingStudentEvent.student_id)
+      if (!existingStudent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_registered)
+      const existingEvent = await EventsRepository.findById(existingStudentEvent.event_id)
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
+      const existingEventType = await EventTypeRepository.findById(existingEvent.type_id)
+      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
+      if(existingStudentEvent.is_finished != 1) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_finished_the_event)
+      const result = {
+        student_name: existingStudent.name,
+        event_name: existingEvent.name,
+        event_type: existingEventType.name
+      }
+      return result
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Detail Student Event Internal Server Error')
+    }
+  }
 }
 
 module.exports = EventService
