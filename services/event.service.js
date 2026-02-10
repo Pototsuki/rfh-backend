@@ -36,12 +36,15 @@ class EventService {
     try {
       const { id } = payload
       const existingEvent = await EventsRepository.findById(id)
-      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_registered)
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
+      const existingEventType = await EventTypeRepository.findById(existingEvent.type_id)
+      if(!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
       const result = {
         name: existingEvent.name,
         start_date: existingEvent.start_date,
         end_date: existingEvent.end_date,
         is_active: existingEvent.is_active,
+        type: existingEventType.name,
         meta: parseMeta(existingEvent.meta)
       }
       return result
