@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Blank Certificate Template</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&amp;family=Montserrat:wght@300;400;500;600;700&amp;family=Great+Vibes&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #0a192f;
+            --accent: #2563eb;
+        }
+        .geometric-pattern {
+            background-color: #0a192f;background-image:  linear-gradient(30deg, #112240 12%, transparent 12.5%, transparent 87%, #112240 87.5%, #112240),
+                               linear-gradient(150deg, #112240 12%, transparent 12.5%, transparent 87%, #112240 87.5%, #112240),
+                               linear-gradient(30deg, #112240 12%, transparent 12.5%, transparent 87%, #112240 87.5%, #112240),
+                               linear-gradient(150deg, #112240 12%, transparent 12.5%, transparent 87%, #112240 87.5%, #112240),
+                               linear-gradient(60deg, #1a2c4e 25%, transparent 25.5%, transparent 75%, #1a2c4e 75%, #1a2c4e),
+                               linear-gradient(60deg, #1a2c4e 25%, transparent 25.5%, transparent 75%, #1a2c4e 75%, #1a2c4e);
+            background-size: 40px 70px;
+            background-position: 0 0, 0 0, 20px 35px, 20px 35px, 0 0, 20px 35px;
+        }
+        @media print {
+            .no-print { display: none !important; }
+            body { padding: 0 !important; background: white !important; }
+            .certificate-outer { border: none !important; box-shadow: none !important; width: 100vw !important; height: 100vh !important; margin: 0 !important; }
+        }
+    </style>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ["Libre Baskerville", "serif"],
+                        sans: ["Montserrat", "sans-serif"],
+                        script: ["Great Vibes", "cursive"],
+                    },
+                },
+            },
+        };
+    </script>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4 md:p-12 font-sans transition-colors duration-300">
+<div class="no-print mb-8 flex gap-4">
+<button class="flex items-center gap-2 px-6 py-2.5 bg-[#0a192f] text-white rounded-md hover:bg-opacity-90 transition-all font-semibold shadow-lg" onclick="window.print()">
+<span class="material-symbols-outlined text-base">print</span>
+            Print Template
+        </button>
+</div>
+<div class="certificate-outer relative bg-white w-full max-w-[1100px] aspect-[1.414/1] shadow-2xl overflow-hidden flex flex-row">
+<div class="geometric-pattern w-[22%] h-full relative flex flex-col justify-end p-8">
+<div class="relative z-10">
+<p class="text-[9px] leading-relaxed uppercase tracking-[0.2em] font-medium text-white/40 vertical-text transform -rotate-180" style="writing-mode: vertical-rl;">
+                    OFFICIAL DOCUMENT • REMOTEFORHIVE VERIFIED
+                </p>
+</div>
+<div class="absolute inset-0 bg-black/10 pointer-events-none"></div>
+</div>
+<div class="flex-1 p-16 md:p-20 flex flex-col relative">
+<div class="absolute top-12 right-12 flex flex-col items-end">
+<div class="flex items-center gap-1">
+<span class="font-bold text-2xl tracking-tighter text-[#0a192f]">Rem<span class="text-blue-600">o</span>te</span>
+</div>
+<span class="font-bold text-xl -mt-1 tracking-tight text-[#0a192f]">For Hive</span>
+</div>
+<div class="mt-12 mb-10">
+<h1 class="font-serif text-4xl md:text-5xl lg:text-6xl text-[#0a192f] uppercase leading-[1.1] tracking-wider font-bold">
+                    Certificate of<br/>Participation
+                </h1>
+</div>
+<div class="space-y-12 flex-grow">
+<div>
+<p class="text-slate-500 font-medium italic text-xl mb-6">
+                        This certificate is proudly presented to
+                    </p>
+<div class="relative w-full border-b border-dashed border-slate-300 h-16 flex items-end pb-2">
+<span class="text-4xl md:text-5xl font-serif italic text-[#0a192f]">
+  {{studentName}}
+</span>
+</div>
+</div>
+<div class="space-y-4">
+<p class="text-slate-600 font-medium text-lg leading-relaxed max-w-xl">
+                        for successfully completing the
+                    </p>
+<div class="relative w-full max-w-lg border-b border-slate-200 h-8">
+<span class="text-xl font-bold text-[#0a192f] uppercase tracking-wide">
+  {{eventName}}
+</span>
+</div>
+</div>
+</div>
+<div class="mt-auto flex justify-between items-end">
+<div class="flex flex-col gap-3">
+<div class="w-64 h-[1.5px] bg-slate-800"></div>
+<div>
+<p class="font-serif text-base font-bold text-[#0a192f] mb-0.5">Leoni Santika CMT NNLP</p>
+<p class="text-xs font-bold text-slate-500 tracking-wide uppercase">Founder of RemoteForHive</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2">
+<div class="bg-white p-1 border border-slate-100 shadow-sm">
+  <img
+  alt="Verification QR Code"
+  class="w-20 h-20 grayscale"
+  src="{{qrCode}}"
+/>
+</div>
+<p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Scan to Verify</p>
+</div>
+</div>
+<div class="absolute bottom-0 right-0 w-32 h-32 bg-slate-50 opacity-50 -z-10 rounded-tl-full"></div>
+</div>
+</div>
+<div class="no-print mt-12 text-center text-slate-500 max-w-2xl mx-auto px-4">
+<p class="text-sm border-t border-slate-200 pt-6">
+<span class="font-bold text-slate-700">Developer Note:</span> This is a high-fidelity template. Use the blank underlined areas for dynamic data injection (Recipient Name and Program Title). The QR code source can be dynamically updated to point to a verification URL.
+        </p>
+</div>
+
+</body></html>

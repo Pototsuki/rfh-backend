@@ -139,7 +139,12 @@ const generateCertificate = async (req, res) => {
     if (!errors.isEmpty()) return error(res, errors.array()[0].msg, 422)
     const eventService = new EventService();
     const result = await eventService.generateCertificate(req.params)
-    return success(res, result)
+    res.setHeader('Content-Type', result.contentType)
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${result.filename}"`
+    )
+    return res.send(result.pdf)
   } catch (err) {
     if (err instanceof AppError) return error(res, err.message, err.statusCode)
     return err(res, 'Generate Certificate Internal Server Error', 500)

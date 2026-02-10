@@ -30,6 +30,8 @@
     "jsonwebtoken": "^9.0.3",
     "mysql": "^2.18.1",
     "mysql2": "^3.16.1",
+    "puppeteer": "^24.37.2",
+    "qrcode": "^1.5.4",
     "sequelize": "^6.37.7",
     "umzug": "^3.8.2",
     "uuid": "^13.0.0",

@@ -7,6 +7,7 @@ const StudentEventsRepository = require('../repositories/student-event.repositor
 const AppError = require('../helpers/app-error')
 const { ErrorServiceEnum } = require('../enums/errors.enum')
 const { parseMeta } = require('../utils/general.util')
+const { generateCertificate } = require('../utils/certificate.util')
 
 class EventService {
   
@@ -299,12 +300,22 @@ class EventService {
       const existingEventType = await EventTypeRepository.findById(existingEvent.type_id)
       if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
       if(existingStudentEvent.is_finished != 1) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_not_finished_the_event)
-      const result = {
-        student_name: existingStudent.name,
-        event_name: existingEvent.name,
-        event_type: existingEventType.name
+      const certificateData = {
+        studentName: existingStudent.name,
+        eventName: existingEvent.name,
+        eventType: existingEventType.name,
+        certificateId: `RFH-${existingStudentEvent.uuid
+          .substring(0, 8)
+          .toUpperCase()}`
       }
-      return result
+      const pdfBuffer = await generateCertificate(certificateData)
+      return {
+        pdf: pdfBuffer,
+        filename: `Certificate-${existingStudent.name.replace(/\s+/g, '-')}.pdf`,
+        contentType: 'application/pdf',
+        student_name: existingStudent.name,
+        event_name: existingEvent.name
+      }
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Detail Student Event Internal Server Error')
