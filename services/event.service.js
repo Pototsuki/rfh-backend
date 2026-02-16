@@ -78,6 +78,22 @@ class EventService {
     }
   }
 
+  async deleteEvent(payload) {
+    try {
+      const { id } = payload
+      const existingEvent = await EventsRepository.findById(id)
+      if (!existingEvent) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_not_registered)
+      const studentEvent = await StudentEventsRepository.findByEvent(existingEvent.id)
+      if(studentEvent.length > 0) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.student_still_available)
+      await EventsRepository.delete(id)
+      const result = { event_name: existingEvent.name }
+      return result
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Delete Event Internal Server Error')
+    }
+  }
+
   async updateEvent(payload) {
     try {
       const { id } = payload
@@ -181,6 +197,22 @@ class EventService {
     } catch (error) {
       if (error instanceof AppError) throw error
       throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Update Event Type Internal Server Error')
+    }
+  }
+
+  async deleteEventType(payload) {
+    try {
+      const { id } = payload
+      const existingEventType = await EventTypeRepository.findById(id)
+      if (!existingEventType) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_type_not_registered)
+      const existingEvent = await EventsRepository.findByType(existingEventType.id)
+      if(existingEvent.length > 0) throw new AppError(StatusCodes.CONFLICT, ErrorServiceEnum.event_still_available)
+      await EventTypeRepository.delete(id)
+      const result = { event_type_name: existingEventType.name }
+      return result
+    } catch (error) {
+      if (error instanceof AppError) throw error
+      throw new AppError(StatusCodes.INTERNAL_SERVER_ERROR,'Delete Event Type Internal Server Error')
     }
   }
 

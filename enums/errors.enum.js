@@ -43,9 +43,11 @@ const ErrorServiceEnum = Object.freeze({
   event_type_registered: 'event_type_registered',
   event_type_not_registered: 'event_type_not_registered',
   event_registered: 'event_registered',
+  event_still_available: 'event_still_available',
   event_not_registered: 'event_not_registered',
   student_registerd: 'student_registered',
   student_not_registered: 'student_not_registered',
+  student_still_available: 'student_still_available',
   student_event_registered: 'student_event_registered',
   student_event_not_registered: 'student_event_not_registered',
   start_date_must_be_lower_than_end_date: 'start_date_must_be_lower_than_end_date'
